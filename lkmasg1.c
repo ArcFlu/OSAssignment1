@@ -11,6 +11,7 @@
 #include <linux/uaccess.h>	  // User access copy function support.
 #define DEVICE_NAME "lkmasg1" // Device name.
 #define CLASS_NAME "char"	  ///< The device class -- this is a character device driver
+#define BUFFER_LENGTH 1024           // Buffer Length
 
 MODULE_LICENSE("GPL");						 ///< The license type -- this affects available functionality
 MODULE_AUTHOR("Aldrich Agabin and Guilherme Camara");					 ///< The author -- visible when you use modinfo
@@ -105,12 +106,21 @@ void cleanup_module(void)
  */
 static int open(struct inode *inodep, struct file *filep)
 {
-const char *path;
+	const char *path;	
+    char *path_buf;
     int flags = O_RDWR;
     int mode = 0;
     struct file *filp;
 
-    path = file_path(filep);
+	// allocate memory
+	path_buf = kmalloc(BUFFER_LENGTH, GFP_KERNEL);
+    if (!path_buf) {
+        printk(KERN_ALERT "Failed to allocate memory for path buffer\n");
+        return -ENOMEM;
+    }
+
+	// open file
+    path = file_path(filep, path_buf);
     if (IS_ERR(path)) {
         printk(KERN_ALERT "Failed to get file path: %ld\n", PTR_ERR(path));
         return PTR_ERR(path);
@@ -131,7 +141,7 @@ const char *path;
  */
 static int close(struct inode *inodep, struct file *filep)
 {
-    filp_close(filp, NULL);
+    filp_close(filep, NULL);
 	printk(KERN_INFO "lkmasg1: device closed.\n");
 	return 0;
 }
