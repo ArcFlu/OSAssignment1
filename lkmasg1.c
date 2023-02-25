@@ -106,9 +106,9 @@ void cleanup_module(void)
 static int open(struct inode *inodep, struct file *filep)
 {
     // Open the device file using the open() system call
-    filep = filp_open(inodep, O_RDWR);
+    fd = filp_open(filep, O_RDWR);
 
-    if (filep < 0) {
+    if (fd < 0) {
         perror("Failed to open the device file");
         return -1;
     }
@@ -122,13 +122,13 @@ static int open(struct inode *inodep, struct file *filep)
  */
 static int close(struct inode *inodep, struct file *filep)
 {
-	filep = filp_close(inodep, O_RDWR);
+	fd = filp_close(filep, O_RDWR);
 
-	if (filep < 0) {
+	if (fd < 0) {
 		perror("Failed to close the device file");
 		return -1;
 	}
-	
+
 	printk(KERN_INFO "lkmasg1: device closed.\n");
 	return 0;
 }
