@@ -10,7 +10,6 @@
 #include <linux/fs.h>		  // File-system support.
 #include <linux/uaccess.h>	  // User access copy function support.
 #include <linux/slab.h>
-#include <stdio.h>
 
 #define DEVICE_NAME "lkmasg1" // Device name.
 #define CLASS_NAME "char"	  ///< The device class -- this is a character device driver
@@ -114,8 +113,6 @@ static int open(struct inode *inodep, struct file *filep)
     int flags = O_RDWR;
     int mode = 0;
     struct file *filp;
-	printf("bruh");
-	printk("bruh");
 
 	// allocate memory
 	path_buf = (char *) kmalloc(BUFFER_LENGTH, GFP_KERNEL);
