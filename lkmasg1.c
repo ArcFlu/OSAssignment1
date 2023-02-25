@@ -9,6 +9,8 @@
 #include <linux/kernel.h>	  // Kernel header for convenient functions.
 #include <linux/fs.h>		  // File-system support.
 #include <linux/uaccess.h>	  // User access copy function support.
+#include <linux/slab.h>
+
 #define DEVICE_NAME "lkmasg1" // Device name.
 #define CLASS_NAME "char"	  ///< The device class -- this is a character device driver
 #define BUFFER_LENGTH 1024           // Buffer Length
@@ -113,14 +115,14 @@ static int open(struct inode *inodep, struct file *filep)
     struct file *filp;
 
 	// allocate memory
-	path_buf = kmalloc(BUFFER_LENGTH, GFP_KERNEL);
+	path_buf = (char *) kmalloc(BUFFER_LENGTH, GFP_KERNEL);
     if (!path_buf) {
         printk(KERN_ALERT "Failed to allocate memory for path buffer\n");
         return -ENOMEM;
     }
 
 	// open file
-    path = file_path(filep, path_buf);
+    path = file_path(filep, path_buf, BUFFER_LENGTH);
     if (IS_ERR(path)) {
         printk(KERN_ALERT "Failed to get file path: %ld\n", PTR_ERR(path));
         return PTR_ERR(path);
