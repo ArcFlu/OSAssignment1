@@ -13,7 +13,7 @@
 #define CLASS_NAME "char"	  ///< The device class -- this is a character device driver
 
 MODULE_LICENSE("GPL");						 ///< The license type -- this affects available functionality
-MODULE_AUTHOR("John Aedo");					 ///< The author -- visible when you use modinfo
+MODULE_AUTHOR("Aldrich Agabin and Guilherme Camara");					 ///< The author -- visible when you use modinfo
 MODULE_DESCRIPTION("lkmasg1 Kernel Module"); ///< The description -- see modinfo
 MODULE_VERSION("0.1");						 ///< A version number to inform users
 
