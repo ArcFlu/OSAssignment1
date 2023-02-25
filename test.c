@@ -22,7 +22,13 @@ static char receive[BUFFER_LENGTH]; ///< The receive buffer from the LKM
 
 int main(int argc, char *argv[])
 {
-    printf(argv);
+    int i;
+    printf("%d\n",argc);
+    for(i=0;i<argc-1;i++)
+    {
+        printf("%s",argv[i]);
+    }
+    
     if (argc != 2)
     {
         printf("Usage: test <path to device>\n");
