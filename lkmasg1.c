@@ -154,7 +154,8 @@ static int close(struct inode *inodep, struct file *filep)
 static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset)
 {
 	printk(KERN_INFO "read stub");
-	return 0;
+	copy_to_user(buffer, message, size_of_message);
+    return size_of_message;
 }
 
 /*
