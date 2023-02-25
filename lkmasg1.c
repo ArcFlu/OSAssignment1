@@ -27,7 +27,7 @@ static int major_number;
 static char   message[BUFFER_LENGTH] = {0};           ///< Memory for the string that is passed from userspace
 static short  size_of_message;              ///< Used to remember the size of the string stored
 static int    numberOpens = 0;              ///< Counts the number of times the device is opened
-char *path_buf;
+ssize_t *path_buf;
 
 static struct class *lkmasg1Class = NULL;	///< The device-driver class struct pointer
 static struct device *lkmasg1Device = NULL; ///< The device-driver device struct pointer
@@ -118,7 +118,7 @@ static int open(struct inode *inodep, struct file *filep)
     struct file *filp;
 
 	// allocate memory
-	path_buf = (char *) kmalloc(BUFFER_LENGTH, GFP_KERNEL);
+	path_buf = kmalloc(BUFFER_LENGTH, GFP_KERNEL);
     if (!path_buf) {
         printk(KERN_ALERT "Failed to allocate memory for path buffer\n");
         return -ENOMEM;
