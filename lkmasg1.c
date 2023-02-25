@@ -24,9 +24,6 @@ MODULE_VERSION("0.1");						 ///< A version number to inform users
  * Important variables that store data and keep track of relevant information.
  */
 static int major_number;
-static char   message[BUFFER_LENGTH] = {0};           ///< Memory for the string that is passed from userspace
-static short  size_of_message;              ///< Used to remember the size of the string stored
-static int    numberOpens = 0;              ///< Counts the number of times the device is opened
 
 static struct class *lkmasg1Class = NULL;	///< The device-driver class struct pointer
 static struct device *lkmasg1Device = NULL; ///< The device-driver device struct pointer
@@ -176,10 +173,10 @@ static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t 
     }
     
     /* Copy the write data from user space to kernel space */
-    message = copy_from_user(data, buffer, len);
-    if (message < 0) {
+    ret = copy_from_user(data, buffer, len);
+    if (ret < 0) {
         kfree(data);
-        return message;
+        return ret;
     }
         
     /* Clean up and return the number of bytes written */
