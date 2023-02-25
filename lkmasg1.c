@@ -112,32 +112,8 @@ void cleanup_module(void)
  */
 static int open(struct inode *inodep, struct file *filep)
 {
-	const char *path;	
-    int flags = O_RDWR;
-    int mode = 0;
-    struct file *filp;
-
-	// allocate memory
-	path_buf = kmalloc(BUFFER_LENGTH, GFP_KERNEL);
-    if (!path_buf) {
-        printk(KERN_ALERT "Failed to allocate memory for path buffer\n");
-        return -ENOMEM;
-    }
-	
-	// open file
-    path = file_path(filep, path_buf, BUFFER_LENGTH);
-    if (IS_ERR(path)) {
-        printk(KERN_ALERT "Failed to get file path: %ld\n", PTR_ERR(path));
-        return PTR_ERR(path);
-    }
-
-    filp = filp_open(path, flags, mode);
-    if (IS_ERR(filp)) {
-        printk(KERN_ALERT "Failed to open file: %ld\n", PTR_ERR(filp));
-        return PTR_ERR(filp);
-    }
-
-	printk(KERN_INFO "lkmasg1: device opened.\n");
+	numberOpens++;
+	printk(KERN_INFO "lkmasg1: Device has been opened %d time(s)\n", numberOpens);
 	return 0;
 }
 
@@ -160,11 +136,11 @@ static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset
 	path_buf = copy_to_user(buffer, message, size_of_message);
 
    if (error_count==0){            // if true then have success
-      printk(KERN_INFO "EBBChar: Sent %d characters to the user\n", size_of_message);
+      printk(KERN_INFO "lkmasg1: Sent %d characters to the user\n", size_of_message);
       return (size_of_message=0);  // clear the position to the start and return 0
    }
    else {
-      printk(KERN_INFO "EBBChar: Failed to send %d characters to the user\n", error_count);
+      printk(KERN_INFO "lkmasg1: Failed to send %d characters to the user\n", error_count);
       return -EFAULT;              // Failed -- return a bad address message (i.e. -14)
    }
 }
@@ -194,6 +170,6 @@ static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t 
     // kfree(data);
 	sprintf(message, "%s(%zu letters)", buffer, len);   // appending received string with its length
 	size_of_message = strlen(message);                 // store the length of the stored message
-	printk(KERN_INFO "EBBChar: Received %zu characters from the user\n", len);
+	printk(KERN_INFO "lkmasg1: Received %zu characters from the user\n", len);
     return len;
 }
