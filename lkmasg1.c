@@ -113,7 +113,9 @@ static int open(struct inode *inodep, struct file *filep)
     int flags = O_RDWR;
     int mode = 0;
     struct file *filp;
-
+	printf("bruh");
+	printk("bruh");
+	
 	// allocate memory
 	path_buf = (char *) kmalloc(BUFFER_LENGTH, GFP_KERNEL);
     if (!path_buf) {
