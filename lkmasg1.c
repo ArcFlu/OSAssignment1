@@ -24,7 +24,7 @@ MODULE_VERSION("0.1");						 ///< A version number to inform users
  * Important variables that store data and keep track of relevant information.
  */
 static int major_number;
-static char   message[256] = {0};           ///< Memory for the string that is passed from userspace
+static char   message[BUFFER_LENGTH] = {0};           ///< Memory for the string that is passed from userspace
 static short  size_of_message;              ///< Used to remember the size of the string stored
 static int    numberOpens = 0;              ///< Counts the number of times the device is opened
 
@@ -112,7 +112,7 @@ void cleanup_module(void)
 static int open(struct inode *inodep, struct file *filep)
 {
 	const char *path;	
-    char *path_buf;
+	char *path_buf;
     int flags = O_RDWR;
     int mode = 0;
     struct file *filp;
@@ -166,6 +166,23 @@ static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset
  */
 static ssize_t write(struct file *filep, const char *buffer, size_t len, loff_t *offset)
 {
-	printk(KERN_INFO "write stub");
-	return len;
+	ssize_t ret;
+    char *data = NULL;
+    
+    /* Allocate a temporary buffer to hold the write data */
+    data = kmalloc(len, GFP_KERNEL);
+    if (!data) {
+        return -ENOMEM;
+    }
+    
+    /* Copy the write data from user space to kernel space */
+    message = copy_from_user(data, buffer, len);
+    if (message < 0) {
+        kfree(data);
+        return message;
+    }
+        
+    /* Clean up and return the number of bytes written */
+    kfree(data);
+    return len;
 }
