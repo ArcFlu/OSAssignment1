@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
     {
         printf("%s",argv[i]);
     }
-    
-    if (argc != 2)
+
+    if (argc != 3)
     {
         printf("Usage: test <path to device>\n");
         exit(0);
