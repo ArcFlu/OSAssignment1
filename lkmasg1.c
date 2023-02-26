@@ -132,8 +132,8 @@ static int close(struct inode *inodep, struct file *filep)
  */
 static ssize_t read(struct file *filep, char *buffer, size_t len, loff_t *offset)
 {
-	printk(KERN_INFO "read stub");
-	path_buf = copy_to_user(buffer, message, size_of_message);
+   int error_count = 0;
+   error_count = copy_to_user(buffer, message, size_of_message);
 
    if (error_count==0){            // if true then have success
       printk(KERN_INFO "lkmasg1: Sent %d characters to the user\n", size_of_message);
