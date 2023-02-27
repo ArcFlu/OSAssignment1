@@ -1,9 +1,0 @@
-*.mod.c
-*.cmd
-*.ko
-*.mod
-*.mod.o
-*.o
-Module.symvers
-modules.order
-test
